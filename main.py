@@ -3,8 +3,6 @@ from utils.dataIO import dataIO
 from telegram.ext import CommandHandler, Updater, Filters
 import os
 import logging
-import subprocess
-import asyncio
 import time
 
 logging.basicConfig(format='[%(levelname)s] %(message)s', level=logging.DEBUG)
@@ -15,9 +13,6 @@ class Bot:
     def __init__(self):
         self.CONFIG = dataIO.load_json(construct_path("resources", "config.json"))
         self.UPDATER = Updater(token=self.CONFIG["telegram"]["token"], use_context=True)
-
-    def is_owner(self, update):
-        return update.effective_user.id == self.CONFIG["telegram"]["owner"]
 
     def add_command(self, func):
         try:
@@ -58,11 +53,10 @@ def quit(update, ctx):
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(bot.online)
+        bot.online()
     except Exception as e:
         print(f"[ERROR] An exception has occured: {e}")
     finally:
-        print("Weiting untill restart...")
+        print("Waiting untill restart...")
         time.sleep(60)
